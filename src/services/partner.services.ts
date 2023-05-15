@@ -39,6 +39,10 @@ const createPartnerService = async (
 const getPartnerById = async (partnerId: string): Promise<IPartner | null> => {
   const partner = await prisma.partner.findUnique({
     where: { id: partnerId },
+    include: {
+      coverageArea: true,
+      address: true,
+    },
   });
 
   return partner as IPartner;
