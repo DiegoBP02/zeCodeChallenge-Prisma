@@ -1,9 +1,10 @@
 import { Prisma, PrismaClient } from "@prisma/client";
+import { IPartner } from "../dtos/partner.dto";
 const prisma = new PrismaClient();
 
 const createPartnerService = async (
   createPartnerInput: Prisma.PartnerCreateInput
-) => {
+): Promise<IPartner> => {
   const {
     address,
     coverageArea,
@@ -35,4 +36,12 @@ const createPartnerService = async (
   return partner;
 };
 
-export { createPartnerService };
+const getPartnerById = async (partnerId: string): Promise<IPartner | null> => {
+  const partner = await prisma.partner.findUnique({
+    where: { id: partnerId },
+  });
+
+  return partner as IPartner;
+};
+
+export { createPartnerService, getPartnerById };
