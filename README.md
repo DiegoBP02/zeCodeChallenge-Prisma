@@ -1,4 +1,4 @@
-Desafio ze-code, você pode encontrar os detalhes do desafio no seguinte repositório: https://github.com/ZXVentures/ze-code-challenges/blob/master/backend.md
+Ze-code challenge, you can see the details of the challenge in the following repository: https://github.com/ZXVentures/ze-code-challenges/blob/master/backend.md
 
 ## API Routes
 
