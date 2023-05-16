@@ -2,16 +2,17 @@ import { Prisma, PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
 import {
   createPartnerService,
+  findNearestPartner,
   getPartnerById,
 } from "../services/partner.services";
 import { IPartner } from "../dtos/partner.dto";
-const prisma = new PrismaClient();
 
 const createPartner = async (
   req: Request,
   res: Response
 ): Promise<Response<IPartner>> => {
-  await prisma.partner.deleteMany();
+  // you can use delete many to test the application without having to provide a different unique document each time
+  // await prisma.partner.deleteMany();
 
   const body: Prisma.PartnerCreateInput = req.body;
   const partner = await createPartnerService(body);
@@ -35,4 +36,22 @@ const getPartner = async (
   return res.status(200).json(partner);
 };
 
-export { createPartner, getPartner };
+const searchPartner = async (req: Request, res: Response) => {
+  const { lat, lng } = req.query;
+
+  if (!lat || !lng) {
+    return res
+      .status(400)
+      .json({ msg: "Latitute and longitude are required!" });
+  }
+
+  const partner = await findNearestPartner(lat as string, lng as string);
+
+  if (!partner) {
+    return res.status(404).json({ msg: "No partner found!" });
+  }
+
+  return res.status(200).json(partner);
+};
+
+export { createPartner, getPartner, searchPartner };

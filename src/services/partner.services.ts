@@ -1,5 +1,12 @@
-import { Prisma, PrismaClient } from "@prisma/client";
+import { Partner, Prisma, PrismaClient } from "@prisma/client";
 import { IPartner } from "../dtos/partner.dto";
+import {
+  Location,
+  getCoverage,
+  findNearest,
+} from "../utils/findNearestPartner.utils";
+import { GeolibInputCoordinates } from "geolib/es/types";
+
 const prisma = new PrismaClient();
 
 const createPartnerService = async (
@@ -48,4 +55,35 @@ const getPartnerById = async (partnerId: string): Promise<IPartner | null> => {
   return partner as IPartner;
 };
 
-export { createPartnerService, getPartnerById };
+const findNearestPartner = async (
+  lat: string,
+  lng: string
+): Promise<IPartner | null> => {
+  const location: Location = {
+    latitude: parseFloat(lat),
+    longitude: parseFloat(lng),
+  };
+
+  const partners = await prisma.partner.findMany({
+    include: {
+      coverageArea: true,
+      address: true,
+    },
+  });
+
+  let partnerFound: IPartner | null = null;
+
+  const coverage = getCoverage(location, partners);
+
+  if (coverage) {
+    if (coverage.length > 1) {
+      partnerFound = findNearest(location, coverage);
+    } else {
+      partnerFound = coverage[0];
+    }
+  }
+
+  return partnerFound;
+};
+
+export { createPartnerService, getPartnerById, findNearestPartner };
