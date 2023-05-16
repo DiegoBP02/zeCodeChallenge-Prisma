@@ -35,5 +35,8 @@ Ze-code challenge, you can see the details of the challenge in the following rep
 - install dependencies with `npm install` command
 - create .env and provide correct values: 
   - DATABASE_URL=<YOUR_POSTGRESQL_CONNECTION_URL>
+- Create and seed the database
+  - Run the following command to create your PostgreSQL database file:
+npx prisma migrate dev --name init
 - start the back-end with 'npm run devStart'
 - you should see "Server is running ..." text
